@@ -53,6 +53,7 @@ export const changePasswordAdminApi = async (id, data) =>
 
 // Absensi
 export const getAbsensiByIdApi = async id => API.get(`/absensi/${id}`);
+export const pengajuanAbsensiApi = async(data) => API.post('/absensi', data)
 
 // Face
 export const postFaceUser = async (id, data) =>

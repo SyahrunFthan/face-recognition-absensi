@@ -9,6 +9,7 @@ import ProfileScreen from './Profile';
 import RiwayatScreen from './Riwayat';
 import SplashScreen from './Splash';
 import SuccessScreen from './Absensi/Success';
+import PengajuanScreen from './Pengajuan';
 export * from './Admin';
 
 export {
@@ -23,4 +24,5 @@ export {
   DetailProfileScreen,
   EditPasswordScreen,
   SuccessScreen,
+  PengajuanScreen
 };

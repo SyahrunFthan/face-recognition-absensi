@@ -116,7 +116,7 @@ const UserAdminScreen = ({navigation, route}) => {
     form.append('alamat', formData.alamat);
     form.append('file', {
       uri: formData.file.uri,
-      name: formData.file.fileName,
+      name: formData.file.fileName.replace(/\s+/g, '_').replace(/[()]/g, ''),
       type: formData.file.type,
     });
 
@@ -141,11 +141,12 @@ const UserAdminScreen = ({navigation, route}) => {
         setFormError({file: error.response.data.message});
         setPage('page3');
       } else {
-        console.log(error.response);
+        console.log(error);
       }
     } finally {
       setIsLoading(false);
     }
+    
   };
 
   const clearForm = () => {

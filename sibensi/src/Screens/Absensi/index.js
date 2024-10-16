@@ -16,7 +16,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Camera } from 'react-native-vision-camera-face-detector';
 import { Worklets } from 'react-native-worklets-core';
 import moment from 'moment-timezone';
-import { faceRecognition, getItem } from '../../Utils';
+import { faceRecognition, getItem, setItem } from '../../Utils';
 import { useDispatch } from 'react-redux';
 import { GetUserLogin } from '../../Features/userSlice';
 import { IonIcon, LoadingComponent } from '../../Components';
@@ -97,6 +97,19 @@ const AbsensiScreen = ({ navigation }) => {
     }
   });
 
+  const getMimeType = (filePath) => {
+    const extension = filePath.split('.').pop().toLowerCase(); // Ambil ekstensi file dan pastikan huruf kecil
+    const mimeTypes = {
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      png: 'image/png',
+      webp: 'image/webp',
+      gif: 'image/gif',
+    };
+    return mimeTypes[extension] || 'application/octet-stream'; // Default jika tidak dikenal
+  };
+  
+
   const takePhoto = async () => {
     if (cameraRef.current) {
       const photo = await cameraRef.current.takePhoto({
@@ -105,13 +118,14 @@ const AbsensiScreen = ({ navigation }) => {
       });
       if (photo) {
         setFaceDetected(false);
+        const mimeTypes = getMimeType(photo.path)
         const profile = await getItem('profile');
-
+        
         if (profile && profile.data && profile.data.userId) {
           let formData = new FormData();
           formData.append('file', {
             uri: `file://${photo.path}`,
-            type: 'image/jpeg',
+            type: mimeTypes,
             name: 'photo.jpg',
           });
           formData.append('userId', profile?.data?.userId);
@@ -129,13 +143,18 @@ const AbsensiScreen = ({ navigation }) => {
             setIsLoading(true);
             const response = await faceRecognition(formData)
             if (response.status == 200) {
-              navigation.replace('Success');
+              navigation.replace('Success', {message: "Anda berhasil absen!"});
             }
           } catch (error) {
             if (error.response && error.response.status === 400) {
-              navigation.replace('Error', {
-                message: error.response.data.message,
-              });
+              if(error.response.data.error == 'location') {
+                await setItem('status', 1)
+                navigation.replace('Pengajuan')
+              }else{
+                navigation.replace('Error', {
+                  message: error.response.data.message,
+                });
+              }
             } else if (error.request) {
               console.error('Request error:', error.request);
             } else {

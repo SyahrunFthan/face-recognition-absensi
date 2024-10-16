@@ -20,7 +20,12 @@ const SplashScreen = ({ navigation }) => {
           }
         } else {
           if (role === 1) {
-            navigation.replace('Main');
+            const status = await getItem('status')
+            if(status == 1){
+              navigation.replace('Pengajuan');
+            }else{
+              navigation.replace('Main');
+            }
           } else {
             navigation.replace('MainAdmin');
           }

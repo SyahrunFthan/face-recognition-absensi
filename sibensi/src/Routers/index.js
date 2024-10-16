@@ -12,6 +12,7 @@ import {
   HomeScreen,
   KehadiranAdminScreen,
   LoginScreen,
+  PengajuanScreen,
   ProfileAdminScreen,
   ProfileScreen,
   RiwayatScreen,
@@ -22,7 +23,6 @@ import {
 import {COLORS} from '../Assets';
 import {MaterialIcon} from '../Components';
 import SuccessScreen from '../Screens/Absensi/Success';
-import {TouchableOpacity} from 'react-native';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -253,6 +253,23 @@ const Routes = () => {
           },
           headerTintColor: COLORS.white,
           headerTitleAlign: 'center',
+        }}
+      />
+      <Stack.Screen
+        name="Pengajuan"
+        component={PengajuanScreen}
+        options={{
+          headerShown: true,
+          headerTitle: 'Form Pengajuan',
+          statusBarStyle: 'light',
+          statusBarColor: COLORS.primary,
+          headerStyle: {
+            backgroundColor: COLORS.primary,
+          },
+          headerTitleStyle: {
+            fontWeight: '600',
+          },
+          headerTintColor: COLORS.white,
         }}
       />
       <Stack.Screen

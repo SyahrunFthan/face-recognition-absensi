@@ -141,9 +141,10 @@ const EditScreen = ({route, navigation}) => {
     form.append('alamat', formData.alamat);
     form.append('file', {
       uri: formData.file.uri,
-      name: formData.file.fileName,
-      type: 'image/jpeg',
+      name: formData.file.fileName.replace(/\s+/g, '_').replace(/[()]/g, ''),
+      type: formData.file.type,
     });
+    console.log(form._parts);
 
     try {
       setIsLoading(true);

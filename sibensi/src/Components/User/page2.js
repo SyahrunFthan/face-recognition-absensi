@@ -147,7 +147,7 @@ const Page2 = ({
           value={formData.alamat}
           onChangeText={text => setFormData({...formData, alamat: text})}
           numberOfLines={4}
-          multiline={false}
+          multiline={true}
           style={[
             styles.textArea,
             {

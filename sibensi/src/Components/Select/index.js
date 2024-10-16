@@ -16,7 +16,7 @@ const Select = ({data, onValueChange, value, style}) => {
             key={index}
             style={{
               fontSize: 16,
-              color: index === 0 ? COLORS.greyOld : COLORS.white,
+              color: index === 0 ? COLORS.greyOld : COLORS.black,
             }}
             label={item.label}
             value={item.value}

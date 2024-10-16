@@ -1,11 +1,12 @@
-import { SafeAreaView, StyleSheet, Dimensions } from 'react-native';
+import { SafeAreaView, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import React, { useRef, useState } from 'react';
 import { useCameraDevice } from 'react-native-vision-camera';
 import { Defs, Ellipse, Mask, Rect, Svg } from 'react-native-svg';
 import { Face, Camera } from 'react-native-vision-camera-face-detector';
 import { Worklets } from 'react-native-worklets-core';
 import { getItem, postFaceUser } from '../../Utils';
-import { SuccessComponent } from '../../Components';
+import { IonIcon, LoadingComponent, SuccessComponent } from '../../Components';
+import { COLORS } from '../../Assets';
 
 const dimension = Dimensions.get('window');
 
@@ -14,6 +15,7 @@ const FaceRegistrationScreen = ({ navigation }) => {
   const [faceDetected, setFaceDetected] = useState(false);
   const [strokeColor, setStrokeColor] = useState('#fff');
   const [lastScanTime, setLastScanTime] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const device = useCameraDevice('front');
   const cameraRef = useRef(null);
 
@@ -46,8 +48,6 @@ const FaceRegistrationScreen = ({ navigation }) => {
         height / frameRadiusY > detectionThreshold
       ) {
         setStrokeColor('green');
-
-        takePhoto();
       } else {
         setFaceDetected(false);
         setStrokeColor('#fff');
@@ -66,7 +66,6 @@ const FaceRegistrationScreen = ({ navigation }) => {
       });
       if (photo) {
         setFaceDetected(false);
-        setCameraActive(false);
         const profile = await getItem('profile');
 
         if (profile && profile.data && profile.data.userId) {
@@ -78,15 +77,18 @@ const FaceRegistrationScreen = ({ navigation }) => {
           });
 
           try {
+            setIsLoading(true)
             const response = await postFaceUser(
               profile?.data?.userId,
               formData,
             );
             if (response?.status == 201) {
-              return null;
+              return navigation.replace('Success', {message: "Wajah berhasil di daftar!"})
             }
           } catch (error) {
             console.log(error);
+          }finally{
+            setIsLoading(false)
           }
         } else {
           console.log('Profile or userId is missing.');
@@ -94,14 +96,15 @@ const FaceRegistrationScreen = ({ navigation }) => {
       } else {
         console.log('Failed to take photo.');
       }
-      console.log(photo);
     } else {
       console.log('Camera reference is not set or frameCame is true.');
     }
   };
 
   if (!cameraActive) {
-    return <SuccessComponent onBack={() => navigation.replace('Main')} />;
+    return (<SafeAreaView style={styles.STContainer}>
+    <Text>Tidak Di Izinkan Absensi</Text>
+  </SafeAreaView>)
   } else {
     return (
       <SafeAreaView style={styles.STContainer}>
@@ -118,7 +121,7 @@ const FaceRegistrationScreen = ({ navigation }) => {
               windowWidth: dimension.width / 2,
               windowHeight: dimension.height / 2,
             }}
-            photo={cameraActive}
+            photo={true}
           />
         )}
         <Svg style={styles.svgContainer}>
@@ -150,6 +153,20 @@ const FaceRegistrationScreen = ({ navigation }) => {
             fill={'transparent'}
           />
         </Svg>
+
+        {
+          strokeColor == 'green' && (
+            <TouchableOpacity style={styles.buttonAbsen} onPress={takePhoto}>
+                <IonIcon
+                  name={'camera-outline'}
+                  size={40}
+                  color={COLORS.white}
+                />
+              </TouchableOpacity>
+          )
+        }
+
+        {isLoading && <LoadingComponent/>}
       </SafeAreaView>
     );
   }
@@ -180,6 +197,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     left: 0,
+  },
+  buttonAbsen: {
+    position: 'absolute',
+    bottom: 50,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    padding: 10,
+    backgroundColor: COLORS.primary,
+    borderRadius: 30,
   },
 });
 

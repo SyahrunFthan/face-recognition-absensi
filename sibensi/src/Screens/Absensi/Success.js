@@ -1,8 +1,10 @@
 import {View, Text, SafeAreaView, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {COLORS, IlSuccessIconFace} from '../../Assets';
+import { useRoute } from '@react-navigation/native';
 
 const SuccessScreen = ({navigation}) => {
+  const route = useRoute();
   return (
     <SafeAreaView style={{flex: 1}}>
       <View
@@ -26,7 +28,7 @@ const SuccessScreen = ({navigation}) => {
             Berhasil!
           </Text>
           <Text style={{color: COLORS.greyOld, fontSize: 16}}>
-            Absensi berhasil di lakukan!
+            {route.params.message}
           </Text>
         </View>
       </View>
