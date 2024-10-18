@@ -149,7 +149,8 @@ const AbsensiScreen = ({ navigation }) => {
             if (error.response && error.response.status === 400) {
               if(error.response.data.error == 'location') {
                 await setItem('status', 1)
-                navigation.replace('Pengajuan')
+                navigation.replace('Pengajuan', {statusAbsensi: jamHariIni > jamAbsen.jam_absen_datang &&
+                  jamHariIni < jamAbsen.jam_akhir_absen_datang ? 1 : 2})
               }else{
                 navigation.replace('Error', {
                   message: error.response.data.message,

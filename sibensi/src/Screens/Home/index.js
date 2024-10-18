@@ -57,7 +57,6 @@ const HomeScreen = ({navigation}) => {
     AmbilData();
   }, []);
 
-  // Refresh Data
   const refreshControl = () => {
     setRefreshing(true);
     AmbilData();

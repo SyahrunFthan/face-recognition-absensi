@@ -6,13 +6,14 @@ import { Input, LoadingComponent } from '../../Components'
 import { getItem, pengajuanAbsensiApi, removeItem } from '../../Utils'
 import {useModal} from 'react-native-modal-message'
 
-const PengajuanScreen = ({navigation}) => {
+const PengajuanScreen = ({navigation, route}) => {
     const [isLoading, setIsLoading] = useState(false)
     const {showErrorModal, showSuccessModal} = useModal()
     const [formData, setFormData] = useState({
         status: '',
         keterangan: '',
-        userId: ''
+        userId: '',
+        statusAbsensi: route.params.statusAbsensi
     })
     const [formError, setFormError] = useState({
         status: '',
@@ -69,6 +70,8 @@ const PengajuanScreen = ({navigation}) => {
 
     useEffect(() => {
         getUser()
+        console.log(formData);
+        
     },[])
   return (
     <SafeAreaView style={styles.container}>
